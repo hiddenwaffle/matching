@@ -30,6 +30,7 @@ const App = () => {
   const currentPatternIndex = useRef(lastPatternIndex)
   const shuffled = window.location.hash === '#random'
   const makePuzzle = (patternIndex: number): Puzzle => {
+    console.log('makePuzzle', patternIndex)
     const pattern = patterns[patternIndex]
     return {
       pattern: shuffled ? { ...pattern, cards: shuffleCards(pattern.cards) } : pattern,
@@ -38,7 +39,7 @@ const App = () => {
       endTime: 0
     }
   }
-  const [currentPuzzle, setCurrentPuzzle] = useState<Puzzle>(makePuzzle(currentPatternIndex.current))
+  const [currentPuzzle, setCurrentPuzzle] = useState<Puzzle>(() => makePuzzle(currentPatternIndex.current))
   const [gameState, setGameState] = useState(GameState.InPlay)
   useEffect(() => {
     const resizeHandler = () => {
