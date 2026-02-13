@@ -2,6 +2,8 @@
 
 ## Play in Browser: https://hiddenwaffle.github.io/matching/
 
+Randomized card positions: https://hiddenwaffle.github.io/matching/#random
+
 The Super Mario Bros 3 card matching game, ported to ReactJS
 
 ## Credits

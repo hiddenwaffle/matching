@@ -3,7 +3,7 @@ import stripesUrl from './assets/stripes.png'
 import CreditsScreen from './components/CreditsScreen'
 import EndScreen from './components/EndScreen'
 import Grid from './components/Grid'
-import { patterns } from './domain/cards-factory'
+import { patterns, shuffleCards } from './domain/cards-factory'
 import { GameState } from './domain/GameState'
 import { Puzzle } from './domain/Puzzle'
 import { persistPatternIndex, retrievePatternIndex } from './save-game'
@@ -28,12 +28,17 @@ const App = () => {
   const [scale, setScale] = useState(1)
   const [iwin, setIwin] = useState(0)
   const currentPatternIndex = useRef(lastPatternIndex)
-  const [currentPuzzle, setCurrentPuzzle] = useState<Puzzle>({
-    pattern: patterns[currentPatternIndex.current],
-    moves: 0,
-    startTime: 0,
-    endTime: 0
-  })
+  const shuffled = window.location.hash === '#random'
+  const makePuzzle = (patternIndex: number): Puzzle => {
+    const pattern = patterns[patternIndex]
+    return {
+      pattern: shuffled ? { ...pattern, cards: shuffleCards(pattern.cards) } : pattern,
+      moves: 0,
+      startTime: 0,
+      endTime: 0
+    }
+  }
+  const [currentPuzzle, setCurrentPuzzle] = useState<Puzzle>(makePuzzle(currentPatternIndex.current))
   const [gameState, setGameState] = useState(GameState.InPlay)
   useEffect(() => {
     const resizeHandler = () => {
@@ -72,12 +77,7 @@ const App = () => {
     if (currentPatternIndex.current >= patterns.length) {
       setGameState(GameState.AllPatternsCompleted)
     } else {
-      setCurrentPuzzle({
-        pattern: patterns[currentPatternIndex.current],
-        moves: 0,
-        startTime: 0,
-        endTime: 0
-      })
+      setCurrentPuzzle(makePuzzle(currentPatternIndex.current))
       persistPatternIndex(currentPatternIndex.current)
       setGameState(GameState.InPlay)
     }
